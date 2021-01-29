@@ -21,7 +21,7 @@ function return_object(fn, ...args) {
   return function () {
     let o = {};
     let counter = 0;
-    let arr = fn(args);
+    let arr = fn(...arguments);
     for (let arg of args) {
       o[arg] = arr[counter++];
     }
