@@ -1,0 +1,80 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Home</title>
+        <style>
+            body{
+                text-align: center;
+            }
+            ul{
+                list-style-type: none;
+            }
+            img{
+                max-width: 250px;
+            }
+            #loader{
+                padding: 3px;
+                border: 1px solid lightblue;
+                border-radius: 5px;
+            }
+            #loader:hover{
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container"></div>
+        <span id="loader">Загрузить еще</span>
+        <script>
+            const xhr = new XMLHttpRequest();
+            window.addEventListener("load",()=>{
+                xhr.open("GET", "products.json", true);
+                xhr.send();
+                xhr.onreadystatechange = function() { // (0 → 1 → 2 → 3 → … → 3 → 4)
+                    if (xhr.readyState != 4) return;
+                    if (xhr.status != 200) {
+                        console.log( xhr.status + ': ' + xhr.statusText ); // обработать ошибку
+                    } else {
+                        let products = JSON.parse(xhr.responseText)
+                        let output = "<ul id='list'>"
+                            products.forEach(prod=>{
+                                output +=   `<li>
+                                                <h2>${prod.name}</h2>
+                                                <section><img src="${prod.imgUrl}"/></section>
+                                                <h2>Цена ${prod.price}</h2>
+                                                <hr>
+                                            </li>`
+                        })
+                        output += "</ul>"
+                        container.innerHTML = output
+                    }
+                }
+            })
+
+            loader.addEventListener("click",()=>{
+                xhr.open("GET", "products.json", true);
+                xhr.send();
+                xhr.onreadystatechange = function() { // (0 → 1 → 2 → 3 → … → 3 → 4)
+                    if (xhr.readyState != 4) return;
+                    if (xhr.status != 200) {
+                        console.log( xhr.status + ': ' + xhr.statusText ); // обработать ошибку
+                    } else {
+                        let products = JSON.parse(xhr.responseText)
+                        let output_ = ""
+                            products.forEach(prod=>{
+                                output_ +=   `<li>
+                                                <h2>${prod.name}</h2>
+                                                <section><img src="${prod.imgUrl}"/></section>
+                                                <h2>Цена ${prod.price}</h2>
+                                                <hr>
+                                            </li>`
+                        })
+                        list.insertAdjacentHTML("beforeend", output_)
+                        loader.style.display = "none"
+                    }
+                }
+            })
+
+        </script>
+    </body>
+</html>
