@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Галерея изображений</title>
+        <style>
+            #container{
+                max-width: 1280px;
+                height: 320px;
+                margin: 0 auto;
+                border: 1px solid lightblue;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="container">
+        </div>
+        <form id="myForm" method="POST" enctype="multipart/form-data">
+            <label for="image">Image</label>
+                <input 
+                    type="file" 
+                    name="file" 
+                    id="image" >
+                <br>
+                 <button id="submitBTN" type="submit">Upload</button>
+        </form>        
+        <script>
+            const url = "http://localhost:3000/upload";
+            const form = document.querySelector('#myForm');
+
+            // add event listener
+            form.addEventListener('submit', e => {
+
+                // disable default action
+                e.preventDefault();
+
+                // collect files
+                const files = document.querySelector('input[name=file]').files;
+                const formData = new FormData();
+                formData.append('avatar', files[0]);
+
+                // post form data
+                const xhr = new XMLHttpRequest();
+                // create and send the reqeust
+                xhr.open('POST', url, true);
+                xhr.setRequestHeader("Access-Control-Allow-Headers","true")
+                xhr.send(formData);
+                xhr.onreadystatechange = function() { // (0 → 1 → 2 → 3 → … → 3 → 4)
+                    if (xhr.readyState != 4) return;
+                    if (xhr.status != 200) {
+                        console.log( xhr.status + ': ' + xhr.statusText ); // обработать ошибку
+                    } else {
+                        let data = JSON.parse(xhr.responseText)
+                        container.insertAdjacentHTML("beforeend", `<h1>${data.data}</h1>`)
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

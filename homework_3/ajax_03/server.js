@@ -4,6 +4,7 @@ const fs = require("fs");
 
 const path = require("path");
 
+
 let mimeTypes = {
 	'.js': 'text/javascript',
 	'.html': 'text/html',
@@ -13,16 +14,19 @@ let mimeTypes = {
     '.ico': 'image/x-icon',
     '.json':'application/json'
 };
-let reqStatus = false;
 
 const server =  http.createServer((req, res)=>{
+
+	let baseURL = 'http://' + req.headers.host + '/';
+
+	let myURL = new URL(req.url, baseURL);
 
     let pathname, extname, mimeType;
 
     if(req.url === "/")
         pathname = "index.html";
     else
-		pathname = req.url.replace("/","");
+		pathname = myURL.pathname.replace("/","");
 	
     extname = path.extname(pathname);
 	mimeType = mimeTypes[extname];
@@ -36,19 +40,14 @@ const server =  http.createServer((req, res)=>{
 				console.log(`The file ${pathname} is read and sent to the client\n`);
 				res.writeHead(200, {'Content-Type': mimeType});
 				if(mimeType == "application/json"){
+					let start = myURL.searchParams.get("start")
+					let skip = myURL.searchParams.get("skip")
 					let parsedProducts = JSON.parse(data)
-					if(!reqStatus){
-						res.end(JSON.stringify(parsedProducts.splice(4,4)))
-						reqStatus = true;
-					}else{
-						res.end(JSON.stringify(parsedProducts.splice(0,4)));
-						reqStatus = false;
-					}
+					res.end(JSON.stringify(parsedProducts.splice(+start,+skip)));
 				}
 				else{
 					res.end(data);
-				}
-                	
+				} 	
 			}
 		});
 })

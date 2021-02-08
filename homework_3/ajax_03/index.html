@@ -23,12 +23,17 @@
         </style>
     </head>
     <body>
-        <div id="container"></div>
+        <div id="container">
+            <ul id="list"></ul>
+        </div>
         <span id="loader">Загрузить еще</span>
         <script>
-            const xhr = new XMLHttpRequest();
-            window.addEventListener("load",()=>{
-                xhr.open("GET", "products.json", true);
+            const xhr = new XMLHttpRequest()
+            let ticker = 0;
+            function XHRHandler(startAt=0, skip=4){
+                ticker++;
+                let request = `products.json?start=${startAt}&skip=${skip}`;
+                xhr.open("GET", request, true);
                 xhr.send();
                 xhr.onreadystatechange = function() { // (0 → 1 → 2 → 3 → … → 3 → 4)
                     if (xhr.readyState != 4) return;
@@ -36,7 +41,7 @@
                         console.log( xhr.status + ': ' + xhr.statusText ); // обработать ошибку
                     } else {
                         let products = JSON.parse(xhr.responseText)
-                        let output = "<ul id='list'>"
+                        let output = ""
                             products.forEach(prod=>{
                                 output +=   `<li>
                                                 <h2>${prod.name}</h2>
@@ -45,36 +50,16 @@
                                                 <hr>
                                             </li>`
                         })
-                        output += "</ul>"
-                        container.innerHTML = output
+                        list.insertAdjacentHTML("beforeend", output)
+                        if(ticker == 2){
+                            loader.style.display = "none";
+                            ticker = 0;
+                        }
                     }
                 }
-            })
-
-            loader.addEventListener("click",()=>{
-                xhr.open("GET", "products.json", true);
-                xhr.send();
-                xhr.onreadystatechange = function() { // (0 → 1 → 2 → 3 → … → 3 → 4)
-                    if (xhr.readyState != 4) return;
-                    if (xhr.status != 200) {
-                        console.log( xhr.status + ': ' + xhr.statusText ); // обработать ошибку
-                    } else {
-                        let products = JSON.parse(xhr.responseText)
-                        let output_ = ""
-                            products.forEach(prod=>{
-                                output_ +=   `<li>
-                                                <h2>${prod.name}</h2>
-                                                <section><img src="${prod.imgUrl}"/></section>
-                                                <h2>Цена ${prod.price}</h2>
-                                                <hr>
-                                            </li>`
-                        })
-                        list.insertAdjacentHTML("beforeend", output_)
-                        loader.style.display = "none"
-                    }
-                }
-            })
-
+            }
+            window.addEventListener("load", XHRHandler)
+            loader.addEventListener("click", XHRHandler.bind(null, event, 4, 4))
         </script>
     </body>
 </html>
