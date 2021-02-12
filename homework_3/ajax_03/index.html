@@ -58,8 +58,8 @@
                     }
                 }
             }
-            window.addEventListener("load", XHRHandler)
-            loader.addEventListener("click", XHRHandler.bind(null, event, 4, 4))
+            window.addEventListener("load", XHRHandler.bind(null, 0, 4))
+            loader.addEventListener("click", XHRHandler.bind(null, 4, 4))
         </script>
     </body>
 </html>
