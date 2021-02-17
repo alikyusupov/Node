@@ -1,0 +1,33 @@
+import { createStore } from 'vuex'
+import axios from 'axios'
+
+const store = createStore({
+    state(){
+        return {
+            images:[]
+        }
+    },
+    mutations:{
+        _getImages(state, images){
+            state.images = images
+        }
+    },
+    actions:{
+        getImages(context){
+            //axios.get('https://jsonplaceholder.typicode.com/todos/1')
+            axios.get('http://localhost:3000/images')
+            .then(res=>{
+            console.log(res)
+            context.commit('_getContacts', res.data.data)
+            })
+            .catch(err=>{
+                console.log(err)
+            })
+        }
+    },
+    getters:{
+
+    }
+})
+
+export default store;

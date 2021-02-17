@@ -25,17 +25,17 @@ res.render('auth', {});
 обратного вызова придёт объект пользователя (user) и перенаправляем на страницу /admin. Если
 проверка не пройдена возвращаем страницу аутентификации с сообщением об ошибке */
 route.post('/', (req, res, next)=> {
-passport.authenticate('local', (err, user, info)=> {
-if (err) { return next(err); } //если ошибка вызываем обработчик ошибок
-/* если пользователь не найдено, отдаем страницу аутентификации с сообщением
-об ошибке */
-if (!user) { return res.render('auth', {message:true}); }
-//даём сигнал модулю passport, что пользователь авторизовался
-req.logIn(user, (err)=> {
-if (err) { return next(err); }
-return res.redirect('/admin'); //перенаправляем на /admin
-});
-})(req, res, next);
+    passport.authenticate('local', (err, user, info)=> {
+    if (err) { return next(err); } //если ошибка вызываем обработчик ошибок
+    /* если пользователь не найдено, отдаем страницу аутентификации с сообщением
+    об ошибке */
+    if (!user) { return res.render('auth', {message:true}); }
+    //даём сигнал модулю passport, что пользователь авторизовался
+    req.logIn(user, (err)=> {
+        if (err) { return next(err); }
+        return res.redirect('/admin'); //перенаправляем на /admin
+    });
+    })(req, res, next);
 });
 /*Роут организующий прием запрос о выходе текущего пользователя из системы. Полный путь:
 /admin/out. Внутри осуществляется посыл сигналу модулю passport, что пользователь выходит из

@@ -1,0 +1,212 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Game online </title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <style>
+            table{
+                width:450px
+            }
+            td{
+                width:150px;
+                height: 150px;
+            }
+            h1{
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Tic tac toe</h1>
+        <p id="statusInfo">
+            
+        </p>
+        <p id="userHello">
+            
+        </p>
+        <section id="wrapper">
+            <h2>Введите ID комнаты чтобы присоединиться к игре</h2>
+
+            <form class="form-inline">
+                <div class="form-group mx-sm-3 mb-2">
+                    <label for="room_join" class="sr-only">Комната</label>
+                    <input type="text" class="form-control" id="room_join" placeholder="ID комнаты">
+                </div>
+                <div class="form-group mx-sm-3 mb-2">
+                    <label for="name_join" class="sr-only">Ваше имя</label>
+                    <input type="text" class="form-control" id="name_join" placeholder="Имя">
+                </div>
+                <button id="joinSubmitter" type="submit" class="btn btn-primary mb-2">Присоединиться к игре</button>
+            </form>
+
+            <h3>или</h3>
+
+            <h2>Создайте игру</h2>
+
+            <form class="form-inline">
+                <div class="form-group mx-sm-3 mb-2">
+                    <label for="name_create" class="sr-only">Ваше имя</label>
+                    <input type="text" class="form-control" id="name_create" placeholder="Имя">
+                </div>
+                <button id="createSubmitter" type="submit" class="btn btn-primary mb-2">Создать игру</button>
+            </form>
+        </section>
+        <table id="gamefield" border="2" style="display: none">
+            <tbody id="board">
+
+            </tbody>
+        </table>
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            const socket = io();
+            let player;
+            let PLAYER_X = "X";
+            let PLAYER_O = "O";
+            let moves = 0;
+
+            function Player(name, sign){
+                this.name = name;
+                this.sign = sign;
+                this.currentTurn = true;
+            }
+
+            const desk = [
+                ["","",""],
+                ["","",""],
+                ["","",""]
+            ]
+
+            for (let i = 0; i < desk.length; i++) {
+                let row = document.createElement("tr");
+                board.appendChild(row)
+                for (let j = 0; j < desk[i].length; j++) {
+                    let cell = document.createElement("td");
+                    cell.style.textAlign = "center"
+                    cell.id=`${i}${j}`
+                    row.appendChild(cell);
+                    cell.addEventListener("click",play.bind(null, i, j))
+                }     
+            }
+
+            function play(i, j){
+                socket.emit("playTurn",{i, j, sign:player.sign})
+
+            }
+
+            function checkWinner(sign){
+                if(
+                    $("#00").text() == sign
+                &&
+                    $("#01").text() == sign
+                &&
+                    $("#02").text() == sign
+                ||
+                    $("#10").text() == sign
+                &&
+                    $("#11").text() == sign
+                &&
+                    $("#12").text() == sign
+                ||
+                    $("#20").text() == sign
+                &&
+                    $("#21").text() == sign
+                &&
+                    $("#22").text() == sign
+                ||
+                    $("#00").text() == sign
+                &&
+                    $("#10").text() == sign
+                &&
+                    $("#20").text() == sign
+                ||
+                    $("#01").text() == sign
+                &&
+                    $("#11").text() == sign
+                &&
+                    $("#21").text() == sign
+                ||
+                    $("#02").text() == sign
+                &&
+                    $("#12").text() == sign
+                &&
+                    $("#22").text() == sign
+                ||
+                    $("#00").text() == sign
+                &&
+                    $("#11").text() == sign
+                &&
+                    $("#22").text() == sign
+                ||
+                    $("#02").text() == sign
+                &&
+                    $("#11").text() == sign
+                &&
+                    $("#20").text() == sign
+                )
+                    socket.emit("win", {sign})
+                if(moves > 8)
+                    console.log("Tie")
+                    
+            }
+
+            socket.on("turnPlayed", data=>{
+                moves++;
+                $(`#${data.i}${data.j}`).text(data.sign)
+                checkWinner(data.sign)
+            })
+
+            $("#createSubmitter").click((e)=>{
+                e.preventDefault();
+                $("#gamefield").css("display","block");
+                let creatorName = $("#name_create").val()
+                socket.emit("createGame",{name:creatorName})
+
+            })
+
+            socket.on('newGame', (data) => {
+                $("#wrapper").css("display","none")
+                const message =
+                  `Please ask your friend to enter Game ID: 
+                  <b>${data.room}</b>. Waiting for player 2...`;
+                  $("#statusInfo").html(message)
+                  $('#userHello').text(`Hello ${data.name}`);
+                  player = new Player(data.name, PLAYER_X)
+            });
+
+            $('#joinSubmitter').on('click', (e) => {
+                e.preventDefault();
+                const name = $('#name_join').val();
+                const roomID = $('#room_join').val();
+                if (!name || !roomID) {
+                  alert('Please enter your name and game ID.');
+                  return;
+                }
+                socket.emit('joinGame', { name, room: roomID.trim() });
+              });
+
+            socket.on('player1', () => {
+                $("#statusInfo").text("В комнате 2 игрока - да начнется битва!")
+                
+              });
+
+              socket.on('player2', (data) => {
+                player = new Player(data.name, PLAYER_O)
+                const message = `Hello, ${data.name}`;
+                $('#userHello').html(message);
+ 
+                $("#statusInfo").css("display","block")
+                $("#statusInfo").text("В комнате 2 игрока - да начнется битва!")
+                $("#gamefield").css("display","block");
+                $("#wrapper").css("display","none")
+              });
+
+              socket.on("announceWinner", data=>{
+                alert(`${data.sign} победили!`)
+              })
+
+        </script>
+    </body>
+</html>
