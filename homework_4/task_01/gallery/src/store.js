@@ -9,15 +9,15 @@ const store = createStore({
     },
     mutations:{
         _getImages(state, images){
+            console.log(images)
             state.images = images
         }
     },
     actions:{
         getImages(context){
             //axios.get('https://jsonplaceholder.typicode.com/todos/1')
-            axios.get('http://localhost:3000/images')
+            axios.get('http://localhost:3000/serveImages')
             .then(res=>{
-            console.log(res)
             context.commit('_getImages', res.data.data)
             })
             .catch(err=>{

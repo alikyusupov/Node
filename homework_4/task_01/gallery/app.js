@@ -4,12 +4,27 @@ let app = express();
 let path = require("path");
 let fs = require("fs");
 let directoryPath = path.join(__dirname, 'public/images');
+
+const multer = require("multer")
+
+const diskStorageToUploads = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, directoryPath)
+    },
+    filename: (req, file, cb) => {
+         cb(null, file.originalname)
+    },
+});
+
+const saveToUploads = multer({storage: diskStorageToUploads});
+
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static('public'));
+app.use(express.static('dist'));
 
 
-app.get("/images", (req, res, next)=>{
+app.get("/serveImages", (req, res, next)=>{
     fs.readdir(directoryPath, function (err, files) {
         //handling error
         if (err) {
@@ -22,9 +37,15 @@ app.get("/images", (req, res, next)=>{
             files_.push("images/" +  file)
         });
         res.set({"Access-Control-Allow-Origin": "*"});
+        res.set({"Content-Type":"image/jpeg"})
         res.json({data:files_})
     });
 })
+
+app.post('/upload', saveToUploads.single('file'), function(req, res, next) {
+    res.json({message:"success"})
+});
+
 app.listen(3000,()=>{
     console.log("Сервер запущен")
 });
