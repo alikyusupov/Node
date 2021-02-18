@@ -4,18 +4,11 @@ let app = express();
 let path = require("path");
 let fs = require("fs");
 let directoryPath = path.join(__dirname, 'public/images');
-let cors = require("cors")
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('public'));
-app.use(cors())
 
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    next();
-});
+
 app.get("/images", (req, res, next)=>{
     fs.readdir(directoryPath, function (err, files) {
         //handling error
@@ -28,6 +21,7 @@ app.get("/images", (req, res, next)=>{
             // Do whatever you want to do with the file
             files_.push("images/" +  file)
         });
+        res.set({"Access-Control-Allow-Origin": "*"});
         res.json({data:files_})
     });
 })

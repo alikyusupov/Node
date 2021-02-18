@@ -66,6 +66,7 @@
             let PLAYER_X = "X";
             let PLAYER_O = "O";
             let moves = 0;
+            let ROOM = null;
 
             function Player(name, sign){
                 this.name = name;
@@ -92,8 +93,13 @@
             }
 
             function play(i, j){
-                socket.emit("playTurn",{i, j, sign:player.sign})
-
+                if(player.currentTurn){
+                    socket.emit("playTurn",{i, j, sign:player.sign, room: ROOM})
+                    player.currentTurn = false;
+                }
+                else{
+                    alert("Не Ваша очередь ходить!")
+                }        
             }
 
             function checkWinner(sign){
@@ -146,7 +152,11 @@
                 &&
                     $("#20").text() == sign
                 )
-                    socket.emit("win", {sign})
+                    {
+                        socket.emit("win", {sign, room:ROOM})
+                        alert(`${sign} победили!`)
+                    }
+                    
                 if(moves > 8)
                     console.log("Tie")
                     
@@ -156,6 +166,9 @@
                 moves++;
                 $(`#${data.i}${data.j}`).text(data.sign)
                 checkWinner(data.sign)
+            })
+            socket.on("setTurn",()=>{
+                player.currentTurn = true
             })
 
             $("#createSubmitter").click((e)=>{
@@ -173,7 +186,8 @@
                   <b>${data.room}</b>. Waiting for player 2...`;
                   $("#statusInfo").html(message)
                   $('#userHello').text(`Hello ${data.name}`);
-                  player = new Player(data.name, PLAYER_X)
+                  player = new Player(data.name, PLAYER_X);
+                  ROOM = data.room;
             });
 
             $('#joinSubmitter').on('click', (e) => {
@@ -185,6 +199,7 @@
                   return;
                 }
                 socket.emit('joinGame', { name, room: roomID.trim() });
+                
               });
 
             socket.on('player1', () => {
@@ -194,13 +209,14 @@
 
               socket.on('player2', (data) => {
                 player = new Player(data.name, PLAYER_O)
+                player.currentTurn = false;
                 const message = `Hello, ${data.name}`;
                 $('#userHello').html(message);
- 
                 $("#statusInfo").css("display","block")
                 $("#statusInfo").text("В комнате 2 игрока - да начнется битва!")
                 $("#gamefield").css("display","block");
                 $("#wrapper").css("display","none")
+                ROOM = data.room
               });
 
               socket.on("announceWinner", data=>{

@@ -18,7 +18,7 @@ const store = createStore({
             axios.get('http://localhost:3000/images')
             .then(res=>{
             console.log(res)
-            context.commit('_getContacts', res.data.data)
+            context.commit('_getImages', res.data.data)
             })
             .catch(err=>{
                 console.log(err)

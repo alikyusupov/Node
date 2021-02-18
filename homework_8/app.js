@@ -15,11 +15,10 @@ app.get('/', function (req, res) {
     res.sendFile('/index.html');
 });
 
-let room = {}
+let room = null;
 
 io.on('connection', function (socket) {
     socket.on("createGame", data=>{
-        room["player1"] = data.name
         socket.join(`room-${++rooms}`);
         socket.emit("newGame", {
             name:data.name,
@@ -28,7 +27,7 @@ io.on('connection', function (socket) {
     })
     socket.on('joinGame', function (data) {
         //console.log(io.of("/").adapter.rooms.get(data.room).size);
-        let room = io.of("/").adapter.rooms.get(data.room);
+            room = io.of("/").adapter.rooms.get(data.room);
         if (room && room.size === 1) {
             socket.join(data.room);
             socket.broadcast.to(data.room).emit('player1', {});
@@ -38,10 +37,11 @@ io.on('connection', function (socket) {
         }
     });
     socket.on("playTurn", data=>{
-        io.emit("turnPlayed", data)
+        io.to(data.room).emit("turnPlayed", data)
+        socket.to(data.room).emit('setTurn', {});
     })
     socket.on("win", data=>{
-        socket.emit("announceWinner", data)
+        socket.broadcast.to(data.room).emit("announceWinner", data)
     })
 })
 

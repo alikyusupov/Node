@@ -19,7 +19,6 @@ function RPN (seq) {
                 // let a = parseInt(stack.splice(-1)[0], 10),
                 let a = parseInt(stack.pop(), 10),
                     b = parseInt(stack.pop(), 10);
-                console.log(a,b)
                 stack.push(a+b);
             }
             if (operandIndex == 1) {
@@ -47,3 +46,22 @@ function RPN (seq) {
 };
 
 console.log(RPN(["2", "1", "+", "3", "*"])) // 9
+
+function inputToString(input){
+    let operands = [];
+    let operators = [];
+    for(char of input){
+        if(!operands.length){
+            operands.push(input[char])
+        }else{
+            if(char[input] == "+" ||  char[input] == "-"){
+                if(operands[operands.length - 1] == "*" || operands[operands.length - 1] == "/"){
+                    let popped = operators.pop();
+                    operands.push(input[char])
+
+                }
+            }
+
+        }
+    }
+}
