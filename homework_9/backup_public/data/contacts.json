@@ -1,0 +1,42 @@
+ [
+      { 
+        "id":"abc01",
+        "name":"Юля",
+        "age":25,
+        "status":"Однокурсница",
+        "phone":"+79991112233",
+        "address":"SPb Main str. 22",
+        "avaPath":"img/woman.png",
+        "description":"Очень веселая и дружелюбная девушка"
+      },
+      {
+        "id":"abc02",
+        "name":"Гена",
+        "age":35,
+        "status":"Сосед",
+        "phone":"+79993332299",
+        "address":"SPb Some str. 2",
+        "avaPath":"img/man.png",
+        "description":"Всегда найдется о чем поговорить с ним"
+      },
+      { 
+        "id":"abc03",
+        "name":"Петя",
+        "age":15,
+        "status":"Родственник",
+        "phone":"+79994442211",
+        "address":"Spb Big str. 3",
+        "avaPath":"img/boy.png",
+        "description":"Не по годам смышленный молодой человек"
+      },
+      {
+        "id":"abc04",
+        "name":"Саша",
+        "age":23,
+        "status":"Коллега",
+        "phone":"+79995552200",
+        "address":"SPb New str. 65",
+        "avaPath":"img/hacker.png",
+        "description":"Работаю с ним недавно. Рано делать выводы"
+      }
+    ]

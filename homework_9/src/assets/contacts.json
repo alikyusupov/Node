@@ -1,0 +1,34 @@
+ [
+      {
+        "name":"Юля",
+        "age":25,
+        "status":"Однокурсница",
+        "phone":"+79991112233",
+        "address":"SPb Main str. 22",
+        "avaPath":"img/woman.png"
+      },
+      {
+        "name":"Гена",
+        "age":35,
+        "status":"Сосед",
+        "phone":"+79993332233",
+        "address":"SPb Some str. 2",
+        "avaPath":"img/man.png"
+      },
+      {
+        "name":"Петя",
+        "age":15,
+        "status":"Родственник",
+        "phone":"+79994442233",
+        "address":"Spb Big str. 3",
+        "avaPath":"img/boy.png"
+      },
+      {
+        "name":"Саша",
+        "age":23,
+        "status":"Коллега",
+        "phone":"+79995552233",
+        "address":"SPb New str. 65",
+        "avaPath":"img/hacker.png"
+      }
+    ]
