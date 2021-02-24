@@ -9,7 +9,6 @@ const store = createStore({
     },
     mutations:{
         _getImages(state, images){
-            console.log(images)
             state.images = images
         }
     },

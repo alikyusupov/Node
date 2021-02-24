@@ -3,7 +3,7 @@ let bodyParser = require('body-parser'); //подключаем парсер т�
 let app = express();
 let path = require("path");
 let fs = require("fs");
-let directoryPath = path.join(__dirname, 'public/images');
+let directoryPath = path.join(__dirname, 'dist/images');
 
 const multer = require("multer")
 

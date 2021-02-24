@@ -23,12 +23,11 @@ export default {
                 method: 'POST',
                 body: formData
         };
-        console.log(options.body)
     
-    fetch('http://localhost:3000/upload', options)
+        fetch('http://localhost:3000/upload', options)
         .then(response => response.json())
-        .then(data => {
-            console.log(data)
+        .then(() => {
+            location.reload()
         })
         .catch(error => {
             console.error(error)
