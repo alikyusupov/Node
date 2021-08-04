@@ -1,5 +1,6 @@
-function RPN (seq) {
-
+function RPN (seq_) {
+    let seq = seq_.split(/\b(\s)/)
+    
     if (seq.length <= 2) {
         console.log('Please enter valid RPN');
         return;
@@ -45,23 +46,33 @@ function RPN (seq) {
     return stack[0];
 };
 
-console.log(RPN(["2", "1", "+", "3", "*"])) // 9
+//console.log(RPN(["2", "1", "+", "3", "*"])) // 9
 
-function inputToString(input){
-    let operands = [];
-    let operators = [];
-    for(char of input){
-        if(!operands.length){
-            operands.push(input[char])
-        }else{
-            if(char[input] == "+" ||  char[input] == "-"){
-                if(operands[operands.length - 1] == "*" || operands[operands.length - 1] == "/"){
-                    let popped = operators.pop();
-                    operands.push(input[char])
-
+function inputToString(_input){
+    let input = _input.split(/(\s)/).join(" ")
+    console.log(input)
+    let outputStack = [];
+    let opStack = [];
+    for(char in input){
+        if(isFinite(input[char])){
+            outputStack.push(input[char])
+        }
+        else{
+            if(!opStack.length){
+                opStack.push(input[char])
+            }
+            else if(opStack.length && input[char] == "*"){
+                if(opStack[opStack.length - 1] == "+"){
+                    let popped = opStack.pop();
+                    opStack.push(input[char])
+                    outputStack.push(popped)
                 }
             }
-
         }
     }
+    return outputStack.concat(opStack)
+    
 }
+
+console.log(inputToString("5 * 2 + 10"))
+//[5,2,3,*,+]

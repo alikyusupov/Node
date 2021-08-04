@@ -1,3 +1,5 @@
+
+
 const WIDGET = {
     cssLink:"//localhost/widget.css",
     id:"wdgt",

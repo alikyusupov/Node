@@ -40,6 +40,7 @@
             const elem = document.getElementById("btn");
             const container = document.getElementById("container");
             elem.addEventListener("click",()=>{
+                console.log("START")
                 const xhr = new XMLHttpRequest();
                 xhr.open("GET", "users.json", true);
                 xhr.send();

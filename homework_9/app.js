@@ -19,7 +19,7 @@ const Contact = require("./models/Contacts")
 const app = express();
 //initializing DB
 const store = new mongoDBStore({
-	uri: process.env.MONGO_DB_URI ||"mongodb+srv://Alisher:asd123asd@dressify-zvh54.mongodb.net/itmo",
+	uri: process.env.MONGO_DB_URI,
     databaseName:"itmo",
 	collection:"sessions"
 });
@@ -55,7 +55,7 @@ app.use(
 
 app.use("/", userRoutes)
 
-mongoose.connect("mongodb+srv://Alisher:asd123asd@dressify-zvh54.mongodb.net/itmo?retryWrites=true&w=majority", { 
+mongoose.connect(process.env.MONGO_DB_URI, { 
     useNewUrlParser: true,
     useUnifiedTopology: true 
 })

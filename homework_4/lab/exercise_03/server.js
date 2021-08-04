@@ -9,8 +9,8 @@ const mimeTypes = {
     '.mp4': 'video/mp4' //mime тип для файлов формата .mp4 
 }; 
 
-http.createServer((request, response) => {// вызов метода создания http сервера   let pathname, extname, mimeType; 
-   
+http.createServer((request, response) => {// вызов метода создания http сервера   
+    let pathname, extname, mimeType; 
     console.log("Request: " + request.url); 
     console.log("Request: " + request.headers.range); 
      

@@ -3,8 +3,8 @@ const http = require("http");
 const fs = require("fs")
 
 const server = http.createServer((req, res)=>{
-	console.log(process.env)
-	console.log(process.env.LANG == "ru")
+	//console.log(process.env)
+	//console.log(process.env.LANG == "ru")
 	if(process.env.LANG == "ru"){
 		fs.readFile("ru.html", "utf8", (err, data)=>{
 			if(err){
